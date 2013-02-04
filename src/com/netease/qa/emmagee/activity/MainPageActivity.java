@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2012-2013 NetEase, Inc. and other contributors
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package com.netease.qa.emmagee.activity;
 
 import java.io.BufferedWriter;
@@ -77,6 +93,7 @@ public class MainPageActivity extends Activity {
 					if (isRadioChecked == true) {
 						Intent intent = getPackageManager()
 								.getLaunchIntentForPackage(packageName);
+						Log.d(LOG_TAG, packageName);
 						startActivity(intent);
 						waitForAppStart(packageName);
 						MonitorService.putExtra("processName", processName);
@@ -125,10 +142,10 @@ public class MainPageActivity extends Activity {
 	}
 
 	/**
-	 * wait for test app start , timeout is 20s
+	 * wait for test application started , timeout is 20s
 	 * 
 	 * @param packageName
-	 *            the package name of test app
+	 *             package name of test application
 	 */
 	private void waitForAppStart(String packageName) {
 		Log.d(LOG_TAG, "wait for app start");
@@ -154,7 +171,7 @@ public class MainPageActivity extends Activity {
 	}
 
 	/**
-	 * override return key to implement a dialog appeared
+	 * override return key to show a dialog 
 	 */
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -221,7 +238,7 @@ public class MainPageActivity extends Activity {
 	}
 
 	/**
-	 * custom adapter
+	 * customizing adapter
 	 * 
 	 */
 	private class ListAdapter extends BaseAdapter {

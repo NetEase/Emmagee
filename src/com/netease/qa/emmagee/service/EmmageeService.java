@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2012-2013 NetEase, Inc. and other contributors
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 package com.netease.qa.emmagee.service;
 
 import java.io.BufferedWriter;
@@ -39,7 +55,7 @@ import com.netease.qa.emmagee.utils.MyApplication;
 import com.netease.qa.emmagee.R;
 
 public class EmmageeService extends Service {
-	
+
 	private final static String LOG_TAG = "Emmagee-"
 			+ EmmageeService.class.getSimpleName();
 
@@ -64,9 +80,9 @@ public class EmmageeService extends Service {
 	private Handler handler = new Handler();
 	private CpuInfo cpuInfo;
 	private String time;
-	private boolean isFloating;	
-	private String processName,packageName,settingTempFile;
-	private int pid,uid;
+	private boolean isFloating;
+	private String processName, packageName, settingTempFile;
+	private int pid, uid;
 
 	public static BufferedWriter bw;
 	public static FileOutputStream out;
@@ -88,14 +104,14 @@ public class EmmageeService extends Service {
 		Log.i(LOG_TAG, "onStart");
 		setForeground(true);
 		super.onStart(intent, startId);
-		
+
 		pid = intent.getExtras().getInt("pid");
 		uid = intent.getExtras().getInt("uid");
 		processName = intent.getExtras().getString("processName");
 		packageName = intent.getExtras().getString("packageName");
 		settingTempFile = intent.getExtras().getString("settingTempFile");
-		
-		cpuInfo = new CpuInfo(getBaseContext(), pid,Integer.toString(uid));
+
+		cpuInfo = new CpuInfo(getBaseContext(), pid, Integer.toString(uid));
 		readSettingInfo(intent);
 		delaytime = Integer.parseInt(time) * 1000;
 		if (isFloating) {
@@ -127,15 +143,16 @@ public class EmmageeService extends Service {
 	}
 
 	/**
-	 * read config file
+	 * read configuration file
 	 * 
 	 * @throws IOException
 	 */
 	private void readSettingInfo(Intent intent) {
 		try {
-			RandomAccessFile raf = new RandomAccessFile(new File(settingTempFile), "r");
+			RandomAccessFile raf = new RandomAccessFile(new File(
+					settingTempFile), "r");
 			time = raf.readLine();
-			isFloating = raf.readLine().equals("true")?true:false;
+			isFloating = raf.readLine().equals("true") ? true : false;
 		} catch (IOException e) {
 			time = "5";
 			isFloating = true;
@@ -158,8 +175,9 @@ public class EmmageeService extends Service {
 					+ File.separator
 					+ "Emmagee_TestResult_" + mDateTime + ".csv";
 		} else {
-			resultFilePath = getBaseContext().getFilesDir().getPath() + File.separator
-					+ "Emmagee_TestResult_" + mDateTime + ".csv";
+			resultFilePath = getBaseContext().getFilesDir().getPath()
+					+ File.separator + "Emmagee_TestResult_" + mDateTime
+					+ ".csv";
 		}
 		try {
 			File resultFile = new File(resultFilePath);
@@ -169,14 +187,12 @@ public class EmmageeService extends Service {
 			bw = new BufferedWriter(osw);
 			long totalMemorySize = memoryInfo.getTotalMemory();
 			String totalMemory = fomart.format((double) totalMemorySize / 1024);
-			bw.write("指定应用的CPU内存监控情况\r\n" + "应用包名：,"
-					+ packageName + "\r\n"
-					+ "应用名称: ," + processName + "\r\n"
-					+ "应用PID: ," + pid + "\r\n"
-					+ "机器内存大小(MB)：," + totalMemory + "MB\r\n" + "机器CPU型号：,"
-					+ cpuInfo.getCpuName() + "\r\n" + "机器android系统版本：,"
-					+ memoryInfo.getSDKVersion() + "\r\n" + "手机型号：,"
-					+ memoryInfo.getPhoneType() + "\r\n" + "UID：,"
+			bw.write("指定应用的CPU内存监控情况\r\n" + "应用包名：," + packageName + "\r\n"
+					+ "应用名称: ," + processName + "\r\n" + "应用PID: ," + pid
+					+ "\r\n" + "机器内存大小(MB)：," + totalMemory + "MB\r\n"
+					+ "机器CPU型号：," + cpuInfo.getCpuName() + "\r\n"
+					+ "机器android系统版本：," + memoryInfo.getSDKVersion() + "\r\n"
+					+ "手机型号：," + memoryInfo.getPhoneType() + "\r\n" + "UID：,"
 					+ uid + "\r\n");
 			bw.write("时间" + "," + "应用占用内存PSS(MB)" + "," + "应用占用内存比(%)" + ","
 					+ " 机器剩余内存(MB)" + "," + "应用占用CPU率(%)" + "," + "CPU总使用率(%)"
@@ -195,11 +211,12 @@ public class EmmageeService extends Service {
 		SharedPreferences.Editor editor = shared.edit();
 		editor.putInt("float", 1);
 		editor.commit();
-		windowManager = (WindowManager) getApplicationContext().getSystemService("window");
+		windowManager = (WindowManager) getApplicationContext()
+				.getSystemService("window");
 		wmParams = ((MyApplication) getApplication()).getMywmParams();
 		wmParams.type = 2002;
 		wmParams.flags |= 8;
-		wmParams.gravity = Gravity.LEFT | Gravity.TOP; 
+		wmParams.gravity = Gravity.LEFT | Gravity.TOP;
 		wmParams.x = 0;
 		wmParams.y = 0;
 		wmParams.width = WindowManager.LayoutParams.WRAP_CONTENT;
@@ -209,7 +226,7 @@ public class EmmageeService extends Service {
 		viFloatingWindow.setOnTouchListener(new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				x = event.getRawX();
-				y = event.getRawY() - 25; 
+				y = event.getRawY() - 25;
 				switch (event.getAction()) {
 				case MotionEvent.ACTION_DOWN:
 					// state = MotionEvent.ACTION_DOWN;
@@ -226,7 +243,7 @@ public class EmmageeService extends Service {
 					break;
 
 				case MotionEvent.ACTION_UP:
-					//state = MotionEvent.ACTION_UP;
+					// state = MotionEvent.ACTION_UP;
 					updateViewPosition();
 					showImg();
 					mTouchStartX = mTouchStartY = 0;
@@ -242,7 +259,8 @@ public class EmmageeService extends Service {
 				try {
 					btnWifi = (Button) viFloatingWindow.findViewById(R.id.wifi);
 					String buttonText = (String) btnWifi.getText();
-					String wifiText = getResources().getString(R.string.openwifi);
+					String wifiText = getResources().getString(
+							R.string.openwifi);
 					if (buttonText.equals(wifiText)) {
 						wifiManager.setWifiEnabled(true);
 						btnWifi.setText(R.string.closewifi);
@@ -281,14 +299,14 @@ public class EmmageeService extends Service {
 	};
 
 	/**
-	 * refresh the data displayed in floating window
+	 * refresh the data showing in floating window
 	 * 
 	 * @throws FileNotFoundException
 	 * 
 	 * @throws IOException
 	 */
 	private void dataRefresh() {
-		int pidMemory = memoryInfo.getPidMemorySize(pid,getBaseContext());
+		int pidMemory = memoryInfo.getPidMemorySize(pid, getBaseContext());
 		long freeMemory = memoryInfo.getFreeMemorySize(getBaseContext());
 		String freeMemoryKb = fomart.format((double) freeMemory / 1024);
 		String processMemory = fomart.format((double) pidMemory / 1024);
@@ -314,8 +332,8 @@ public class EmmageeService extends Service {
 				}
 			}
 			if (processCpuRatio != null && totalCpuRatio != null) {
-				txtUnusedMem.setText("占用内存:" + processMemory + "MB" + ",机器剩余:" + freeMemoryKb
-						+ "MB");
+				txtUnusedMem.setText("占用内存:" + processMemory + "MB" + ",机器剩余:"
+						+ freeMemoryKb + "MB");
 				txtTotalMem.setText("占用CPU:" + processCpuRatio + "%"
 						+ ",总体CPU:" + totalCpuRatio + "%");
 				if (trafficSize.equals("-1")) {
