@@ -74,6 +74,11 @@ public class CurrentInfo {
 		if (f.exists())
 			return getCurrentValue(f, true);
 
+		// meizu pro 5
+		f = new File("/sys/class/power_supply/bq2753x-0/current_now");
+		if (f.exists())
+			return getCurrentValue(f, true);
+
 		// galaxy note, galaxy s2
 		f = new File(BATT_CURRENT_ADC);
 		if (f.exists())
