@@ -17,3 +17,9 @@ local.properties
 
 lint.xml
 .DS_Store
+
+# gradle
+.idea
+.gradle
+build
+app/build
